@@ -27,8 +27,7 @@ public:
 	// dir1.y * dir2.x * b + dir1.y * (offset2.x - offset1.x) = dir1.x * dir2.y * b + dir1.x * (offset2.y - offset1.y)
 	// that is:
 	// b = (dir1.x * (offset2.y - offset1.y) - dir1.y * (offset2.x - offset1.x)) / (dir1.y * dir2.x - dir1.x * dir2.y)
-	std::set<Point> intersect(const Line& ln) const {
-		std::set<Point> result;
+	PointContainer intersect(const Line& ln) const {
 		const Point dir1 = direction().normalized();
 		const Point dir2 = ln.direction().normalized();
 		// if the lines are parallel, by convention, they don't intersect
@@ -36,9 +35,9 @@ public:
 			assert(dir1.y * dir2.x != dir1.x * dir2.y); // <-- that's just how math works (dir1 & dir2 have the same length!)
 			const Point offset_diff = ln.first - first;
 			const float b = (dir1.x * offset_diff.y - dir1.y * offset_diff.x) / (dir1.y * dir2.x - dir1.x * dir2.y);
-			result.emplace(dir2 * b + ln.first);
+			return {dir2 * b + ln.first};
 		}
-		return result;
+		return {};
 	}
 
 	~Line() = default;
